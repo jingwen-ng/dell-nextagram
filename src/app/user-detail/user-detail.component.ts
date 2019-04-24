@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { UserService } from '../user.service'
 import { ActivatedRoute } from '@angular/router'
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-detail',
@@ -10,6 +11,12 @@ import { ActivatedRoute } from '@angular/router'
 export class UserDetailComponent implements OnInit {
   images: string[] = []
   username: string
+ inputs = []
+  likeClick=0
+
+  todo = new FormGroup({
+    comment: new FormControl("")
+  })
 
   constructor(
     private userService: UserService,
@@ -23,5 +30,22 @@ export class UserDetailComponent implements OnInit {
     this.userService.getUserImages(userId).subscribe(response => {
       this.images = response as string[]
     })
+
+    debugger
+    this.userService.getInputs().subscribe(inputs => {
+      this.inputs = inputs
+    })
   }
+
+  onSubmit(){
+    if(!this.todo.invalid){
+      this.userService.addInputs(this.todo.value)
+      debugger
+    }
+    this.todo.reset();
+  }
+
+  onClick(){
+    this.likeClick+=1
+    } 
 }
